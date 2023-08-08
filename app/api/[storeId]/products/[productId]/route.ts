@@ -36,11 +36,6 @@ export async function PATCH(req:Request,{params}:{params:{productId:string,store
         const { name, price, categoryId, colorId, sizeId, images, isFeatured, isArchived } = body;
 
         if(!userId) return new NextResponse("Unauthenticated", {status:401});
-        if(!price) return new NextResponse("Label is required", {status:400});
-        if(!categoryId) return new NextResponse("categoryId is required", {status:400});
-        if(!colorId) return new NextResponse("colorId is required", {status:400});
-        if(!sizeId) return new NextResponse("sizeId is required", {status:400});
-        if(!name) return new NextResponse("name is required", {status:400});
         if(!images || !images.length) return new NextResponse("images are required",{status:400});
 
         if(!userId) {

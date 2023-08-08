@@ -47,8 +47,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
             await axios.patch(`/api/stores/${params.storeId}`, data);
             router.refresh();
             toast.success("Updated!")
-        } catch (error) {
-            toast.error("Something went wrong. (SettingsForm)")
+        } catch (error: any) {
+            toast.error(error.reponse.data)
         }
     };
 
@@ -58,8 +58,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
             await axios.delete(`/api/stores/${params.storeId}`);
             router.refresh();
             toast.success("Store deleted");
-        } catch (error) {
-            toast.error("Make sure you removed all products and categories first");
+        } catch (error: any) {
+            toast.error(error.response.data);
         } finally {
             setLoading(false);
             setOpen(false);

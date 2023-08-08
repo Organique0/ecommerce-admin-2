@@ -9,7 +9,7 @@ export async function POST(req:Request,{params}:{params:{storeId:string}}) {
         const { name, price, categoryId, colorId, sizeId, images, isFeatured, isArchived } = body;
 
         if(!userId) return new NextResponse("Unauthenticated", {status:401});
-        if(!price) return new NextResponse("Label is required", {status:400});
+        if(!price) return new NextResponse("Price is required", {status:400});
         if(!categoryId) return new NextResponse("categoryId is required", {status:400});
         if(!colorId) return new NextResponse("colorId is required", {status:400});
         if(!sizeId) return new NextResponse("sizeId is required", {status:400});

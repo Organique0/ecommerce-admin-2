@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category, Color, Image, Product, Size } from "@prisma/client";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -72,8 +72,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, colo
             router.refresh();
             router.push(`/${params.storeId}/products`);
             toast.success(toastMessage);
-        } catch (error) {
-            toast.error("Something went wrong. (Product-form)");
+        } catch (error: any) {
+            toast.error(error.response.data);
         } finally {
             setLoading(false);
         }
@@ -86,8 +86,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, colo
             router.refresh();
             router.push(`/${params.storeId}/products`);
             toast.success("Product deleted");
-        } catch (error) {
-            toast.error("Could not remove a product (Product-form)");
+        } catch (error: any) {
+            toast.error(error.response.data);
         } finally {
             setLoading(false);
             setOpen(false);

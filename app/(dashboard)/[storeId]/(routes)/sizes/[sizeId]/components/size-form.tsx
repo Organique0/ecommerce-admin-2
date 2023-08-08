@@ -58,8 +58,8 @@ const SizeForm: React.FC<SizeFormProps> = ({ initialData }) => {
             router.refresh();
             router.push(`/${params.storeId}/sizes`)
             toast.success(toastMessage)
-        } catch (error) {
-            toast.error("Something went wrong. (Size-form)")
+        } catch (error: any) {
+            toast.error(error.response.data)
         } finally {
             setLoading(false);
         }
