@@ -1,13 +1,19 @@
 import { prismadb } from "@/lib/prismadb";
 import ColorForm from "./components/size-form";
+import { Color } from "@prisma/client";
+const { ObjectId } = require('mongodb');
+
 
 const ColorPage = async ({ params }: { params: { colorId: string } }) => {
-    const color = await prismadb.color.findUnique({
-        where: {
-            id: params.colorId
-        }
-    });
 
+    let color: Color | null = null;
+    if (params.colorId && ObjectId.isValid(params.colorId)) {
+        color = await prismadb.color.findUnique({
+            where: {
+                id: params.colorId
+            }
+        });
+    }
 
     return (
         <div className="flex-col">

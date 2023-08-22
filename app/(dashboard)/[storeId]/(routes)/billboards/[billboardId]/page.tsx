@@ -1,12 +1,17 @@
 import { prismadb } from "@/lib/prismadb";
 import BillboardForm from "./components/billboard-form";
-
+import { Billboard } from "@prisma/client";
+const { ObjectId } = require('mongodb');
 const BillboardPage = async ({ params }: { params: { billboardId: string } }) => {
-    const billboard = await prismadb.billboard.findUnique({
-        where: {
-            id: params.billboardId
-        }
-    });
+    let billboard: Billboard | null = null;
+
+    if (params.billboardId && ObjectId.isValid(params.billboardId)) {
+        billboard = await prismadb.billboard.findUnique({
+            where: {
+                id: params.billboardId
+            }
+        });
+    }
 
 
     return (

@@ -31,7 +31,7 @@ type ProductFormValues = z.infer<typeof formSchema>;
 const formSchema = z.object({
     name: z.string().min(1),
     images: z.object({ url: z.string() }).array(),
-    price: z.coerce.number().min(1),
+    price: z.string().min(1),
     categoryId: z.string().min(1),
     colorId: z.string().min(1),
     sizeId: z.string().min(1),
@@ -55,8 +55,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, colo
         resolver: zodResolver(formSchema),
         defaultValues:
             initialData
-                ? { ...initialData, price: parseFloat(String(initialData?.price)), }
-                : { name: '', images: [], price: 0, categoryId: '', colorId: '', sizeId: '', isFeatured: false, isArchived: false }
+                ? { ...initialData, price: initialData?.price, }
+                : { name: '', images: [], price: "0", categoryId: '', colorId: '', sizeId: '', isFeatured: false, isArchived: false }
     });
 
     const onSubmit = async (data: ProductFormValues) => {
@@ -164,7 +164,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, categories, colo
                             <FormItem>
                                 <FormLabel>Price</FormLabel>
                                 <FormControl>
-                                    <Input disabled={loading} placeholder="Product price" {...field} type="number" />
+                                    <Input disabled={loading} placeholder="Product price" {...field} type="text" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
