@@ -1,10 +1,10 @@
 import { prismadb } from "@/lib/prismadb";
 
-export const getSalesCount = async (storeId:string) => {
+export const getSalesCount = async (storeId: string) => {
     const salesCount = await prismadb.order.count({
-        where:{
+        where: {
             storeId,
-            isPaid:true,
+            isPaid: true,
         }
     });
 
@@ -12,38 +12,38 @@ export const getSalesCount = async (storeId:string) => {
 }
 
 
-export const getTotalRevenue = async (storeId:string) => {
+export const getTotalRevenue = async (storeId: string) => {
     const paidOrders = await prismadb.order.findMany({
-        where:{
+        where: {
             storeId,
-            isPaid:true,
+            isPaid: true,
         },
-        include:{
+        include: {
             orderItems: {
                 include: {
-                    product:true
+                    product: true
                 }
             }
         }
     });
 
-    const totalRevenue = paidOrders.reduce((total,order) => {
+    const totalRevenue = paidOrders.reduce((total, order) => {
         const orderTotal = order.orderItems.reduce((orderSum, item) => {
-            return orderSum + item.product.price.toNumber();
-        },0);
+            return orderSum + parseFloat(item.product.price);
+        }, 0);
 
         return total + orderTotal;
-    },0);
+    }, 0);
 
     return totalRevenue;
 }
 
 
-export const getProductsInStock = async (storeId:string) => {
+export const getProductsInStock = async (storeId: string) => {
     const stockCount = await prismadb.product.count({
         where: {
             storeId,
-            isArchived:false,
+            isArchived: false,
         }
     });
 
@@ -51,54 +51,54 @@ export const getProductsInStock = async (storeId:string) => {
 }
 
 interface GraphData {
-    name:string;
-    total:number;
+    name: string;
+    total: number;
 }
 
-export const getGraphRevenue = async (storeId:string) => {
+export const getGraphRevenue = async (storeId: string) => {
     const paidOrders = await prismadb.order.findMany({
         where: {
-            isPaid:true,
+            isPaid: true,
             storeId
         },
         include: {
             orderItems: {
                 include: {
-                    product:true,
+                    product: true,
                 }
             }
         }
     });
 
-    const monthlyRevenue: {[key:number]:number} = {};
+    const monthlyRevenue: { [key: number]: number } = {};
 
-    for(const order of paidOrders) {
+    for (const order of paidOrders) {
         const month = order.createdAt.getMonth();
         let revenueForOrder = 0;
 
-        for(const item of order.orderItems) {
-            revenueForOrder += item.product.price.toNumber();
+        for (const item of order.orderItems) {
+            revenueForOrder += parseFloat(item.product.price);
         }
 
         monthlyRevenue[month] = (monthlyRevenue[month] || 0) + revenueForOrder;
     };
 
     const graphData: GraphData[] = [
-        {name : "Jan", total : 0},
-        {name : "Feb", total : 0},
-        {name : "Mar", total : 0},
-        {name : "Apr", total : 0},
-        {name : "May", total : 0},
-        {name : "Jun", total : 0},
-        {name : "Jul", total : 0},
-        {name : "Aug", total : 0},
-        {name : "Sep", total : 0},
-        {name : "Oct", total : 0},
-        {name : "Nov", total : 0},
-        {name : "Dec", total : 0},
+        { name: "Jan", total: 0 },
+        { name: "Feb", total: 0 },
+        { name: "Mar", total: 0 },
+        { name: "Apr", total: 0 },
+        { name: "May", total: 0 },
+        { name: "Jun", total: 0 },
+        { name: "Jul", total: 0 },
+        { name: "Aug", total: 0 },
+        { name: "Sep", total: 0 },
+        { name: "Oct", total: 0 },
+        { name: "Nov", total: 0 },
+        { name: "Dec", total: 0 },
     ];
 
-    for(const month in monthlyRevenue) {
+    for (const month in monthlyRevenue) {
         graphData[parseInt(month)].total = monthlyRevenue[parseInt(month)];
     }
 
